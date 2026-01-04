@@ -18,19 +18,34 @@ namespace BookstoreApplication.Models
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<AuthorAward>(authorAwardEntity => { 
-              authorAwardEntity.HasKey(authorAward => new { authorAward.AuthorId, authorAward.AwardId }); // Primarni ključ je kombinacija AuthorId + AwardId
+            modelBuilder.Entity<AuthorAward>(authorAwardEntity => {
+                // izmena naziva tabele
+                authorAwardEntity.ToTable("AuthorAwardBridge");
+                authorAwardEntity.HasKey(authorAward => new { authorAward.AuthorId, authorAward.AwardId }); // Primarni ključ je kombinacija AuthorId + AwardId
 
                 // Veza ka Author
                 authorAwardEntity.HasOne(authorAward => authorAward.Author)
                                .WithMany(author => author.AuthorAwards)
-                               .HasForeignKey(authorAward => authorAward.AuthorId);
+                               .HasForeignKey(authorAward => authorAward.AuthorId)
+                               .OnDelete(DeleteBehavior.Cascade);
 
                 // Veza ka Award
-              authorAwardEntity.HasOne(authorAward => authorAward.Award)
+                authorAwardEntity.HasOne(authorAward => authorAward.Award)
                                .WithMany(award => award.AuthorAwards)
-                               .HasForeignKey(authorAward => authorAward.AwardId);
+                               .HasForeignKey(authorAward => authorAward.AwardId)
+                               .OnDelete(DeleteBehavior.Cascade);
             });
+                // Iznema u koloni
+            modelBuilder.Entity<Author>()
+              .Property(authorEntity => authorEntity.DateOfBirth)
+              .HasColumnName("Birthday");
+
+            modelBuilder.Entity<Book>()
+                .HasOne(book => book.Author)
+                .WithMany(author => author.Books)
+                .HasForeignKey(Book => Book.AuthorId)
+                .OnDelete(DeleteBehavior.Restrict);
+
         }
     }
 }

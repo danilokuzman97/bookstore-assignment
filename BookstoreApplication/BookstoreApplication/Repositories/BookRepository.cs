@@ -19,7 +19,7 @@ namespace BookstoreApplication.Repositories
             return book;
         }
 
-        public async Task<Book> UpdatAsynce(Book book)
+        public async Task<Book> UpdateAsync(Book book)
         {
             _context.Books.Update(book);
             await _context.SaveChangesAsync();

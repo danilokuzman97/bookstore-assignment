@@ -12,47 +12,43 @@ namespace BookstoreApplication.Repositories
             _context = context;
         }
 
-        public Publisher Add(Publisher publisher)
+        public async Task<Publisher?> AddAsync (Publisher publisher)
         {
             _context.Publishers.Add(publisher);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
             return publisher;
         }
 
-        public Publisher Update(Publisher publisher)
+        public async Task<Publisher> UpdateAsync(Publisher publisher)
         {
-            Publisher existing = _context.Publishers.Find(publisher.Id);
-
-            existing.Name = publisher.Name;
-            existing.Address = publisher.Address;
-            existing.Website = publisher.Website;
-
-            _context.SaveChanges();
-            return existing;
+            _context.Publishers.Update(publisher);
+            await _context.SaveChangesAsync();
+            return publisher;
         }
 
 
-        public bool Delete(int id)
+
+        public async Task<bool> DeleteAsync(int id)
         {
-            Publisher publisher = _context.Publishers.Find(id);
+            Publisher? publisher = await _context.Publishers.FindAsync(id);
             if (publisher == null)
             {
                 return false;
             }
 
             _context.Publishers.Remove(publisher);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
             return true;
         }
 
-        public List<Publisher> GetAll()
+        public async  Task<List<Publisher>> GetAllAsync()
         {
-            return _context.Publishers.ToList();
+            return await _context.Publishers.ToListAsync();
         }
 
-        public Publisher? GetById(int id)
+        public async Task<Publisher?> GetByIdAsync(int id)
         {
-            return _context.Publishers.Find(id);
+            return await _context.Publishers.FindAsync(id);
         }
 
     }

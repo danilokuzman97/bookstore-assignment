@@ -23,16 +23,16 @@ namespace BookstoreApplication.Controllers
         }
         // GET: api/books
         [HttpGet]
-        public IActionResult GetAll()
+        public async Task<IActionResult> GetAll()
         {
-            return Ok(_bookRepository.GetAll());
+            return Ok(await _bookRepository.GetAllAsync());
         }
 
         // GET api/books/5
         [HttpGet("{id}")]
-        public IActionResult GetOne(int id)
+        public async Task<IActionResult> GetOne(int id)
         {
-            Book? book = _bookRepository.GetById(id);
+            Book? book = await _bookRepository.GetByIdAsync(id);
             if (book == null)
             {
                 return NotFound();
@@ -42,17 +42,15 @@ namespace BookstoreApplication.Controllers
 
         // POST api/books
         [HttpPost]
-        public IActionResult Post(Book book)
+        public async Task<IActionResult> Post(Book book)
         {
-            // kreiranje knjige je moguće ako je izabran postojeći autor
-            Author? author = _authorRepository.GetById(book.AuthorId);
+            Author? author = await _authorRepository.GetByIdAsync(book.AuthorId);
             if (author == null)
             {
                 return BadRequest();
             }
 
-            // kreiranje knjige je moguće ako je izabran postojeći izdavač
-            Publisher? publisher = _publisherRepository.GetById(book.PublisherId);
+            Publisher? publisher = await _publisherRepository.GetByIdAsync(book.PublisherId);
             if (publisher == null)
             {
                 return BadRequest();
@@ -61,42 +59,46 @@ namespace BookstoreApplication.Controllers
             book.Author = author;
             book.Publisher = publisher;
 
-            Book newBook = _bookRepository.Add(book);
+            Book newBook = await _bookRepository.AddAsync(book);
             return Ok(book);
         }
 
         // PUT api/books/5
         [HttpPut("{id}")]
-        public IActionResult Put(int id, Book book)
+        public async Task<IActionResult> Put(int id, Book book)
         {
             if (id != book.Id)
             {
                 return BadRequest();
             }
 
-            // izmena knjige je moguca ako je izabran postojeći autor
-            Author? author = _authorRepository.GetById(book.AuthorId);
+            Book? existingBook = await _bookRepository.GetByIdAsync(id);
+            if (existingBook == null)
+            {
+                return BadRequest();
+            }
+
+            Author? author = await _authorRepository.GetByIdAsync(book.AuthorId);
             if (author == null)
             {
                 return BadRequest();
             }
 
-            // izmena knjige je moguca ako je izabran postojeći izdavač
-            Publisher? publisher = _publisherRepository.GetById(book.PublisherId);
+            Publisher? publisher = await _publisherRepository.GetByIdAsync(book.PublisherId);
             if (publisher == null)
             {
                 return BadRequest();
             }
 
-            Book newBook = _bookRepository.Update(book);
+            Book newBook = await _bookRepository.UpdatAsynce(book);
             return Ok(newBook);
         }
 
         // DELETE api/books/id
         [HttpDelete("{id}")]
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            bool deleted = _bookRepository.Delete(id);
+            bool deleted = await _bookRepository.DeleteAsync(id);
             if (!deleted)
             {
                 return NotFound();

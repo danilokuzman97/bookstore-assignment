@@ -1,4 +1,5 @@
-﻿using BookstoreApplication.Models;
+﻿using System.Threading.Tasks;
+using BookstoreApplication.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace BookstoreApplication.Repositories
@@ -12,41 +13,41 @@ namespace BookstoreApplication.Repositories
             _context = context;
         }
 
-        public Author Add(Author author)
+        public async Task<Author> AddAsync(Author author)
         {
             _context.Authors.Add(author);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
             return author;
         }
 
-        public Author Update(Author author)
+        public async Task<Author> UpdateAsync(Author author)
         {
             _context.Authors.Update(author);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
             return author;
         }
 
-        public bool Delete(int id)
+        public async Task<bool> DeleteAsync(int id)
         {
-            Author author = _context.Authors.Find(id);
+            Author? author = await _context.Authors.FindAsync(id);
             if (author == null)
             {
                 return false;
             }
 
             _context.Authors.Remove(author);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
             return true;
         }
 
-        public List<Author> GetAll()
+        public async Task<List<Author>> GetAllAsync()
         {
-            return _context.Authors.ToList();
+            return await _context.Authors.ToListAsync();
         }
 
-        public Author? GetById(int id)
+        public async Task<Author> GetByIdAsync(int id)
         {
-            return _context.Authors.Find(id);
+            return await _context.Authors.FindAsync(id);
         }
 
     }

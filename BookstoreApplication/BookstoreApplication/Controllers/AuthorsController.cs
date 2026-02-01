@@ -2,6 +2,7 @@
 using BookstoreApplication.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using BookstoreApplication.Services;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BookstoreApplication.Controllers
 {
@@ -9,11 +10,11 @@ namespace BookstoreApplication.Controllers
     [ApiController]
     public class AuthorsController : ControllerBase
     {
-        private readonly AuthorService _authorService;
+        private readonly IAuthorService _authorService;
 
-        public AuthorsController(AppDbContext context)
+        public AuthorsController(IAuthorService authorService)
         {
-            _authorService = new AuthorService(context);
+            _authorService = authorService;
         }
 
         // GET: api/authors

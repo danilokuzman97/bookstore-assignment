@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Mvc;
 using BookstoreApplication.Repositories;
 using BookstoreApplication.Services;
 
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace BookstoreApplication.Controllers
 {
@@ -12,15 +11,15 @@ namespace BookstoreApplication.Controllers
     [ApiController]
     public class BooksController : ControllerBase
     {
-        private readonly BookService _bookService;
-        private AuthorRepository _authorRepository;
-        private PublisherRepository _publisherRepository;
+        private readonly IBookService _bookService;
+        private readonly IAuthorService _authorService;
+        private readonly IPublisherService _publisherService;
 
-        public BooksController(AppDbContext context)
+        public BooksController(IBookService bookService, IAuthorService authorService, IPublisherService publisherService)
         {
-           _bookService = new BookService(context);
-           _authorRepository = new AuthorRepository(context);
-           _publisherRepository = new PublisherRepository(context);
+           _bookService = bookService;
+           _authorService = authorService;
+           _publisherService = publisherService;
         }
         // GET: api/books
         [HttpGet]
@@ -45,13 +44,13 @@ namespace BookstoreApplication.Controllers
         [HttpPost]
         public async Task<IActionResult> Post(Book book)
         {
-            Author? author = await _authorRepository.GetByIdAsync(book.AuthorId);
+            Author? author = await _authorService.GetOne(book.AuthorId);
             if (author == null)
             {
                 return BadRequest();
             }
 
-            Publisher? publisher = await _publisherRepository.GetByIdAsync(book.PublisherId);
+            Publisher? publisher = await _publisherService.GetOne(book.PublisherId);
             if (publisher == null)
             {
                 return BadRequest();
@@ -73,13 +72,13 @@ namespace BookstoreApplication.Controllers
                 return BadRequest();
             }
 
-            Author? author = await _authorRepository.GetByIdAsync(book.AuthorId);
+            Author? author = await _authorService.GetOne(book.AuthorId);
             if (author == null)
             {
                 return BadRequest();
             }
 
-            Publisher? publisher = await _publisherRepository.GetByIdAsync(book.PublisherId);
+            Publisher? publisher = await _publisherService.GetOne(book.PublisherId);
             if (publisher == null)
             {
                 return BadRequest();

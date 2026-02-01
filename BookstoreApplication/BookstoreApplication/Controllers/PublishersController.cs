@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Mvc;
 using BookstoreApplication.Repositories;
 using BookstoreApplication.Services;
 
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace BookstoreApplication.Controllers
 {
@@ -13,11 +12,11 @@ namespace BookstoreApplication.Controllers
     public class PublishersController : ControllerBase
     {
 
-        private readonly PublisherService _publisherService;
+        private readonly IPublisherService _publisherService;
 
-        public PublishersController(AppDbContext context)
+        public PublishersController(IPublisherService publisherService)
         {
-            _publisherService = new PublisherService(context);
+            _publisherService = publisherService;
         }
 
         // GET: api/publishers

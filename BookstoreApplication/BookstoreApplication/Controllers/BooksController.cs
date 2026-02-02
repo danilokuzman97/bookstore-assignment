@@ -32,7 +32,7 @@ namespace BookstoreApplication.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetOne(int id)
         {
-            Book? book = await _bookService.GetOne(id);
+            var book = await _bookService.GetOne(id);
             if (book == null)
             {
                 return NotFound();

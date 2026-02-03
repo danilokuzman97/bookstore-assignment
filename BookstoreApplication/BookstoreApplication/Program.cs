@@ -3,6 +3,7 @@ using BookstoreApplication.Repositories;
 using BookstoreApplication.Services;
 using Microsoft.EntityFrameworkCore;
 using BookstoreApplication.Settings;
+using BookstoreApplication.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -38,6 +39,7 @@ builder.Services.AddScoped<IAuthorService, AuthorService>();
 builder.Services.AddScoped<IPublisherRepository, PublisherRepository>();
 builder.Services.AddScoped<IPublisherService, PublisherService>();
 
+builder.Services.AddTransient<ExceptionHandlingMiddleware>();
 
 builder.Services.AddCors(options =>
 {
@@ -53,6 +55,9 @@ builder.Services.AddCors(options =>
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
+
+app.UseMiddleware<ExceptionHandlingMiddleware>();
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();

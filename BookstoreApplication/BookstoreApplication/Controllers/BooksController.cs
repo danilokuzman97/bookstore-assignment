@@ -3,6 +3,7 @@ using BookstoreApplication.Models;
 using Microsoft.AspNetCore.Mvc;
 using BookstoreApplication.Repositories;
 using BookstoreApplication.Services;
+using BookstoreApplication.DTOs;
 
 
 namespace BookstoreApplication.Controllers
@@ -25,7 +26,9 @@ namespace BookstoreApplication.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            return Ok(await _bookService.GetAll());
+            var books = await _bookService.GetAll();
+
+            return Ok(books);
         }
 
         // GET api/books/5
@@ -33,10 +36,7 @@ namespace BookstoreApplication.Controllers
         public async Task<IActionResult> GetOne(int id)
         {
             var book = await _bookService.GetOne(id);
-            if (book == null)
-            {
-                return NotFound();
-            }
+
             return Ok(book);
         }
 
@@ -44,21 +44,6 @@ namespace BookstoreApplication.Controllers
         [HttpPost]
         public async Task<IActionResult> Post(Book book)
         {
-            Author? author = await _authorService.GetOne(book.AuthorId);
-            if (author == null)
-            {
-                return BadRequest();
-            }
-
-            Publisher? publisher = await _publisherService.GetOne(book.PublisherId);
-            if (publisher == null)
-            {
-                return BadRequest();
-            }
-
-            book.Author = author;
-            book.Publisher = publisher;
-
             await _bookService.Add(book);
             return Ok(book);
         }
@@ -67,23 +52,6 @@ namespace BookstoreApplication.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, Book book)
         {
-            if (id != book.Id)
-            {
-                return BadRequest();
-            }
-
-            Author? author = await _authorService.GetOne(book.AuthorId);
-            if (author == null)
-            {
-                return BadRequest();
-            }
-
-            Publisher? publisher = await _publisherService.GetOne(book.PublisherId);
-            if (publisher == null)
-            {
-                return BadRequest();
-            }
-
             await _bookService.Update(book);
             return Ok(book);
         }
@@ -92,11 +60,7 @@ namespace BookstoreApplication.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            bool deleted = await _bookService.Delete(id);
-            if (!deleted)
-            {
-                return NotFound();
-            }
+            await _bookService.Delete(id);
             return NoContent();
         }
     }

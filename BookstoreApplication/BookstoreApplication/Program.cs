@@ -1,11 +1,23 @@
+using Serilog;
 using BookstoreApplication.Models;
 using BookstoreApplication.Repositories;
 using BookstoreApplication.Services;
 using Microsoft.EntityFrameworkCore;
 using BookstoreApplication.Settings;
 using BookstoreApplication.Middleware;
+using Microsoft.AspNetCore.Identity;
+
+
 
 var builder = WebApplication.CreateBuilder(args);
+
+var logger = new LoggerConfiguration()
+    .ReadFrom.Configuration(builder.Configuration)
+    .Enrich.FromLogContext()
+    .CreateLogger();
+builder.Logging.ClearProviders();
+builder.Logging.AddSerilog(logger);
+builder.Host.UseSerilog();
 
 // Add services to the container.
 
@@ -39,7 +51,22 @@ builder.Services.AddScoped<IAuthorService, AuthorService>();
 builder.Services.AddScoped<IPublisherRepository, PublisherRepository>();
 builder.Services.AddScoped<IPublisherService, PublisherService>();
 
+builder.Services.AddScoped<IAuthService, AuthService>();
+
 builder.Services.AddTransient<ExceptionHandlingMiddleware>();
+
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
+       .AddEntityFrameworkStores<AppDbContext>()
+       .AddDefaultTokenProviders();
+
+builder.Services.Configure<IdentityOptions>(options =>
+{
+    options.Password.RequireDigit = true;
+    options.Password.RequireLowercase = true;
+    options.Password.RequireUppercase = true;
+    options.Password.RequireNonAlphanumeric = true;
+    options.Password.RequiredLength = 8;
+});
 
 builder.Services.AddCors(options =>
 {
@@ -54,6 +81,9 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
+app.UseAuthentication();
+app.UseAuthorization();
+
 // Configure the HTTP request pipeline.
 
 app.UseMiddleware<ExceptionHandlingMiddleware>();
@@ -66,7 +96,6 @@ if (app.Environment.IsDevelopment())
 
 app.UseCors("AllowAll");
 
-app.UseAuthorization();
 
 app.MapControllers();
 

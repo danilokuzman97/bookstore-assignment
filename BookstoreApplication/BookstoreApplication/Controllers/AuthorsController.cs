@@ -70,5 +70,16 @@ namespace BookstoreApplication.Controllers
             }
             return NoContent();
         }
+
+        [HttpGet("paging")]
+        public async Task<IActionResult> GetAuthorsPage([FromQuery] int page = 1)
+        {
+            if (page < 1)
+            {
+                return BadRequest("Page value is invalid.");
+            }
+
+            return Ok(await _authorService.GetAllPaged(page));
+        }
     }
 }

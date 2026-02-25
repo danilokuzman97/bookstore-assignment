@@ -2,6 +2,7 @@
 using BookstoreApplication.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BookstoreApplication.Controllers
 {
@@ -33,13 +34,18 @@ namespace BookstoreApplication.Controllers
         public async Task<IActionResult> Login(LoginDto data)
         {
             if (!ModelState.IsValid)
-            {
                 return BadRequest(ModelState);
-            }
 
-            await _authService.LoginAsync(data);
+            var token = await _authService.LoginAsync(data);
 
-            return Ok("Login successful.");
+            return Ok(token);
+        }
+
+        [Authorize]
+        [HttpGet("profile")]
+        public async Task<IActionResult> Profile()
+        {
+            return Ok(await _authService.GetProfileAsync(User));
         }
     }
 }

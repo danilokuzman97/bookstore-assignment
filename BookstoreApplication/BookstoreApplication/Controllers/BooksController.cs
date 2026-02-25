@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using BookstoreApplication.Repositories;
 using BookstoreApplication.Services;
 using BookstoreApplication.DTOs;
+using Microsoft.AspNetCore.Authorization;
 
 
 namespace BookstoreApplication.Controllers
@@ -41,6 +42,7 @@ namespace BookstoreApplication.Controllers
         }
 
         // POST api/books
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> Post(Book book)
         {
@@ -49,6 +51,7 @@ namespace BookstoreApplication.Controllers
         }
 
         // PUT api/books/5
+        [Authorize(Roles = "Editor")]
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, Book book)
         {
@@ -57,6 +60,7 @@ namespace BookstoreApplication.Controllers
         }
 
         // DELETE api/books/id
+        [Authorize]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {

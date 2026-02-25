@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 
 namespace BookstoreApplication.Models
 {
@@ -18,6 +19,12 @@ namespace BookstoreApplication.Models
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<IdentityRole>().HasData(
+            new IdentityRole { Name = "Librarian", NormalizedName = "LIBRARIAN" },
+            new IdentityRole { Name = "Editor", NormalizedName = "EDITOR" }
+
+            );
 
             modelBuilder.Entity<AuthorAward>(authorAwardEntity => {
                 // izmena naziva tabele
@@ -105,6 +112,11 @@ namespace BookstoreApplication.Models
                 new AuthorAward { AuthorId = 5, AwardId = 2, YearAwarded = 1926 },
                 new AuthorAward { AuthorId = 5, AwardId = 3, YearAwarded = 1930 },
                 new AuthorAward { AuthorId = 5, AwardId = 4, YearAwarded = 1935 }
+            );
+
+            modelBuilder.Entity<IdentityRole>().HasData(
+                new IdentityRole { Id = "rple-librarian", Name = "Librarian", NormalizedName = "LIBRARIAN" },
+                new IdentityRole { Id = "role-editor", Name = "Editor", NormalizedName = "EDITOR" }
             );
 
         }

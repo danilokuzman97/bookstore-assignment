@@ -36,6 +36,7 @@ namespace BookstoreApplication.Services
 
                 throw new BadRequestException(errorMessage);
             }
+            await _userManager.AddToRoleAsync(user, "Librarian");
         }
 
         public async Task<string> LoginAsync(LoginDto data)
@@ -57,12 +58,15 @@ namespace BookstoreApplication.Services
         private async Task<string> GenerateJwt(ApplicationUser user)
         {
             var claims = new List<Claim>
-    {
-        new Claim(JwtRegisteredClaimNames.Sub, user.Id),
-        new Claim("username", user.UserName),
-        new Claim("name", user.Name),
-        new Claim("surname", user.Surname)
-    };
+            {
+                new Claim(JwtRegisteredClaimNames.Sub, user.Id),
+                new Claim("username", user.UserName),
+                new Claim("name", user.Name),
+                new Claim("surname", user.Surname)
+            };
+
+            var roles = await _userManager.GetRolesAsync(user);
+            claims.AddRange(roles.Select(role => new Claim("role", role)));
 
             var key = new SymmetricSecurityKey(
                 Encoding.UTF8.GetBytes(_configuration["Jwt:Key"])

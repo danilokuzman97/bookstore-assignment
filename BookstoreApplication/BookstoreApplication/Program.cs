@@ -11,6 +11,8 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.OpenApi.Models;
 using BookstoreApplication.Utils;
+using Microsoft.AspNetCore.Authentication;
+using System.Security.Claims;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -116,7 +118,18 @@ builder.Services.AddAuthentication(options =>
             Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"])
         )
     };
-});
+})
+.AddGoogle("Google", options =>
+ {
+     options.ClientId = builder.Configuration["Authentication:Google:ClientId"];
+     options.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
+
+     options.ClaimActions.MapJsonKey(ClaimTypes.GivenName, "given_name");
+     options.ClaimActions.MapJsonKey(ClaimTypes.Surname, "family_name");
+
+     options.CallbackPath = "/api/Auth/signin-google";
+ });
+
 
 
 

@@ -8,5 +8,7 @@ namespace BookstoreApplication.Services
         Task RegisterAsync(RegistrationDto dto);
         Task<string> LoginAsync(LoginDto data);
         Task<ProfileDto> GetProfileAsync(ClaimsPrincipal userPrincipal);
+        Task<string> LoginWithGoogle(string email, string? name, string? surname);
+
     }
 }

@@ -10,7 +10,7 @@ namespace BookstoreApplication.Utils
             var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
             var userManager = serviceProvider.GetRequiredService<UserManager<ApplicationUser>>();
 
-            // Kreiranje prvog editora
+            // Kreiranje editora
             var editor1 = new ApplicationUser
             {
                 UserName = "john",
@@ -26,7 +26,6 @@ namespace BookstoreApplication.Utils
                 await userManager.AddToRoleAsync(editor1, "Editor");
             }
 
-            // Kreiranje drugog editora
             var editor2 = new ApplicationUser
             {
                 UserName = "jane",
@@ -42,7 +41,6 @@ namespace BookstoreApplication.Utils
                 await userManager.AddToRoleAsync(editor2, "Editor");
             }
 
-            // Kreiranje treceg editora
             var editor3 = new ApplicationUser
             {
                 UserName = "nick",

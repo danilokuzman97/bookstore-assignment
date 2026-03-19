@@ -13,6 +13,7 @@ using Microsoft.OpenApi.Models;
 using BookstoreApplication.Utils;
 using Microsoft.AspNetCore.Authentication;
 using System.Security.Claims;
+using BookstoreApplication.Connections;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -90,6 +91,14 @@ builder.Services.AddScoped<IPublisherRepository, PublisherRepository>();
 builder.Services.AddScoped<IPublisherService, PublisherService>();
 
 builder.Services.AddScoped<IAuthService, AuthService>();
+
+
+builder.Services.AddScoped<IVolumeService, VolumeService>();
+builder.Services.AddScoped<IComicVineConnection, ComicVineConnection>();
+builder.Services.AddHttpClient<ComicVineConnection>();
+
+builder.Services.AddScoped<IIssueRepository, IssueRepository>();
+
 
 builder.Services.AddTransient<ExceptionHandlingMiddleware>();
 

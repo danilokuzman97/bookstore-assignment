@@ -3,6 +3,7 @@ using System;
 using BookstoreApplication.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BookstoreApplication.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260310194820_AddIssueTable")]
+    partial class AddIssueTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -493,25 +496,29 @@ namespace BookstoreApplication.Migrations
                     b.Property<int>("AvailableCopies")
                         .HasColumnType("integer");
 
-                    b.Property<DateTime?>("CoverDate")
+                    b.Property<DateTime>("CoverDate")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Description")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<int>("ExternalApiId")
                         .HasColumnType("integer");
 
                     b.Property<string>("ImagePath")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("IssueNumber")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<int>("PageCount")
@@ -599,6 +606,18 @@ namespace BookstoreApplication.Migrations
                     b.ToTable("AspNetRoles", (string)null);
 
                     b.HasData(
+                        new
+                        {
+                            Id = "89729f61-20f6-421c-b625-64e300f27c32",
+                            Name = "Librarian",
+                            NormalizedName = "LIBRARIAN"
+                        },
+                        new
+                        {
+                            Id = "62aae33d-50c5-4917-973e-b2c873b089d5",
+                            Name = "Editor",
+                            NormalizedName = "EDITOR"
+                        },
                         new
                         {
                             Id = "rple-librarian",
